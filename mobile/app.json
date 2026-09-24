@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "SamadhanSetu",
+    "slug": "samadhansetu-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "splash": {
+      "backgroundColor": "#0f2c59",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f2c59"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow SamadhanSetu to use your location to geotag reported societal challenges."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow SamadhanSetu to access photos of the reported problem."
+        }
+      ],
+      "expo-font",
+      "expo-status-bar"
+    ]
+  }
+}
