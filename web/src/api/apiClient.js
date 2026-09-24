@@ -1,4 +1,7 @@
-const BASE_URL = '/api';
+const rawEnvUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const BASE_URL = rawEnvUrl
+  ? (rawEnvUrl.endsWith('/api') ? rawEnvUrl : `${rawEnvUrl}/api`)
+  : '/api';
 
 export const apiClient = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
