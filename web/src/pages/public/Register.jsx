@@ -37,9 +37,9 @@ export const Register = () => {
       const user = await register(formData);
       switch (user.role) {
         case 'citizen': navigate('/citizen/dashboard'); break;
-        case 'student':
         case 'university': navigate('/university/dashboard'); break;
-        case 'industry': navigate('/industry/dashboard'); break;
+        case 'csr':
+        case 'industry': navigate('/csr/dashboard'); break;
         case 'admin': navigate('/admin/dashboard'); break;
         default: navigate('/');
       }
@@ -59,7 +59,7 @@ export const Register = () => {
           </span>
           <h1 className="text-xl font-bold text-slate-900 mt-1">Create your SamadhanSetu Account</h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Join the Jharkhand civic innovation network as a citizen, student, faculty, or CSR partner.
+            Join the Jharkhand civic innovation network as a citizen, university faculty, or CSR partner.
           </p>
         </div>
 
@@ -123,9 +123,8 @@ export const Register = () => {
                 className="w-full p-2.5 rounded border border-slate-300 focus:outline-none focus:ring-1 focus:ring-gov-700"
               >
                 <option value="citizen">Citizen / Community Representative</option>
-                <option value="student">Student Innovator</option>
                 <option value="university">University Faculty Mentor</option>
-                <option value="industry">Industry / CSR Partner</option>
+                <option value="csr">Corporate CSR Partner (e.g. Tata CSR)</option>
               </select>
             </div>
           </div>
@@ -144,7 +143,7 @@ export const Register = () => {
             </select>
           </div>
 
-          {(formData.role === 'student' || formData.role === 'university') && (
+          {formData.role === 'university' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">University / College Name</label>
@@ -171,7 +170,7 @@ export const Register = () => {
             </div>
           )}
 
-          {formData.role === 'industry' && (
+          {(formData.role === 'csr' || formData.role === 'industry') && (
             <div className="pt-2 border-t border-slate-100">
               <label className="block font-semibold text-slate-700 mb-1">Organization / Company Name</label>
               <input

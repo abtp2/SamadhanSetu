@@ -15,10 +15,10 @@ const { authenticateJWT, requireRoles } = require('../middleware/auth');
 router.get('/my', authenticateJWT, getMyProjects);
 router.get('/', getAllProjects);
 router.get('/:id', getProjectById);
-router.post('/adopt', authenticateJWT, requireRoles('student', 'university', 'admin'), adoptChallenge);
-router.post('/:id/milestones', authenticateJWT, requireRoles('student', 'university', 'admin'), addMilestone);
+router.post('/adopt', authenticateJWT, requireRoles('university', 'admin'), adoptChallenge);
+router.post('/:id/milestones', authenticateJWT, requireRoles('university', 'admin'), addMilestone);
 router.patch('/:id/milestones/:milestoneId/submit', authenticateJWT, submitMilestoneProof);
 router.patch('/:id/milestones/:milestoneId/verify', authenticateJWT, requireRoles('university', 'admin'), verifyMilestone);
-router.post('/:id/team-members', authenticateJWT, requireRoles('student', 'university', 'admin'), addTeamMember);
+router.post('/:id/team-members', authenticateJWT, requireRoles('university', 'admin'), addTeamMember);
 
 module.exports = router;

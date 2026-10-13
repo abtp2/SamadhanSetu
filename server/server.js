@@ -4,6 +4,7 @@ dotenv.config();
 const app = require('./app');
 const { connectDB } = require('./config/db');
 const Challenge = require('./models/Challenge');
+const User = require('./models/User');
 const seedData = require('./seed/seedData');
 
 const PORT = process.env.PORT || 5000;
@@ -12,13 +13,13 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    // Auto-seed if database is completely empty
-    const challengeCount = await Challenge.countDocuments();
-    if (challengeCount === 0) {
-      console.log('[Server] Database is empty. Automatically executing initial seed with Jharkhand dataset...');
+    // Auto-seed if database has no users
+    const userCount = await User.countDocuments();
+    if (userCount === 0) {
+      console.log('[Server] Database has no users. Executing seed...');
       await seedData();
     } else {
-      console.log(`[Server] Found ${challengeCount} existing challenges in database.`);
+      console.log(`[Server] Found ${userCount} existing users in database.`);
     }
 
     const server = app.listen(PORT, '0.0.0.0', () => {

@@ -56,11 +56,11 @@ const adoptChallenge = async (req, res) => {
       name: `${challenge.category} Solution Taskforce`,
       project: project._id,
       leader: req.user.id,
-      facultyMentor: req.user.role === 'university' ? req.user.id : null,
+      facultyMentor: req.user.id,
       studentMembers: [
         {
           user: req.user.id,
-          roleInTeam: req.user.role === 'student' ? 'Student Lead' : 'Faculty Principal Investigator',
+          roleInTeam: 'Academic Project Lead',
         },
       ],
     });

@@ -9,7 +9,6 @@
     "seed": "node seed/seedData.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.11.0",
     "cors": "^2.8.5",

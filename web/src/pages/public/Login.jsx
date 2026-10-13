@@ -17,12 +17,12 @@ export const Login = () => {
       case 'citizen':
         navigate('/citizen/dashboard');
         break;
-      case 'student':
       case 'university':
         navigate('/university/dashboard');
         break;
+      case 'csr':
       case 'industry':
-        navigate('/industry/dashboard');
+        navigate('/csr/dashboard');
         break;
       case 'admin':
         navigate('/admin/dashboard');

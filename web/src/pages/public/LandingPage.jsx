@@ -258,7 +258,7 @@ export const LandingPage = () => {
   return (
     <div className="space-y-12 sm:space-y-16 pb-16 bg-slate-50 min-h-screen">
       {/* HERO SECTION: Fading Jharkhand background (forests, temples, waterfalls, hills) */}
-      <section className="relative overflow-hidden py-14 sm:py-20 border-b border-gov-950 bg-slate-950">
+      <section className="relative overflow-hidden py-14 sm:py-20 border-b border-gov-950 bg-gov-950">
         {/* Fading Background Slideshow */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           {JHARKHAND_HERO_BG.map((item, idx) => (
@@ -316,7 +316,7 @@ export const LandingPage = () => {
 
             {/* Right Column: Simplest Image Slider (Natural aspect ratio, no manual height) */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden border border-white/20 bg-slate-950/80 aspect-[4/3] sm:aspect-[16/10] w-full shadow-2xl backdrop-blur-xs">
+              <div className="relative rounded-2xl overflow-hidden border border-white/20 bg-gov-950/80 aspect-[4/3] sm:aspect-[16/10] w-full shadow-2xl backdrop-blur-xs">
                 {HERO_SLIDES.map((slide, index) => (
                   <div
                     key={slide.id}
@@ -333,13 +333,13 @@ export const LandingPage = () => {
                 ))}
 
                 {/* Minimal Bottom Bar */}
-                <div className="absolute bottom-0 inset-x-0 bg-slate-950/85 px-4 py-3 text-white flex items-center justify-between text-xs z-20 border-t border-white/10 backdrop-blur-xs">
+                <div className="absolute bottom-0 inset-x-0 bg-gov-950/85 px-4 py-3 text-white flex items-center justify-between text-xs z-20 border-t border-white/10 backdrop-blur-xs">
                   <span className="font-medium truncate">{HERO_SLIDES[currentSlide].title}</span>
                   <div className="flex items-center space-x-2 shrink-0 ml-3">
                     <button
                       type="button"
                       onClick={prevSlide}
-                      className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-colors cursor-pointer border border-slate-700"
+                      className="w-6 h-6 rounded bg-gov-800 hover:bg-gov-700 text-white flex items-center justify-center transition-colors cursor-pointer border border-gov-700"
                       title="Previous"
                       aria-label="Previous"
                     >
@@ -351,7 +351,7 @@ export const LandingPage = () => {
                     <button
                       type="button"
                       onClick={nextSlide}
-                      className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-colors cursor-pointer border border-slate-700"
+                      className="w-6 h-6 rounded bg-gov-800 hover:bg-gov-700 text-white flex items-center justify-center transition-colors cursor-pointer border border-gov-700"
                       title="Next"
                       aria-label="Next"
                     >

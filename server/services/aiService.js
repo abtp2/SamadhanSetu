@@ -1,6 +1,7 @@
 const Groq = require('groq-sdk');
 const Challenge = require('../models/Challenge');
 const ChallengeAIAnalysis = require('../models/ChallengeAIAnalysis');
+const University = require('../models/University');
 
 // Available official categories
 const VALID_CATEGORIES = [
@@ -16,8 +17,8 @@ const VALID_CATEGORIES = [
   'Public services',
 ];
 
-// Fallback intelligent analyzer when Gemini API key is missing or quota is reached
-function fallbackHeuristicAnalysis(challenge, existingChallenges = []) {
+// Fallback intelligent analyzer when Groq API key is missing or quota is reached
+function fallbackHeuristicAnalysis(challenge, existingChallenges = [], availableUniversities = []) {
   const text = `${challenge.title} ${challenge.description} ${challenge.location}`.toLowerCase();
 
   // Category detection keywords
@@ -52,7 +53,17 @@ function fallbackHeuristicAnalysis(challenge, existingChallenges = []) {
     severityScore = 4;
   }
 
-  const priorityLevel = severityScore >= 8 ? 'URGENT' : severityScore >= 6 ? 'HIGH' : severityScore >= 4 ? 'MEDIUM' : 'LOW';
+  // Priority classification: HIGH / URGENT / MEDIUM / LOW
+  let priorityLevel = 'HIGH';
+  if (severityScore >= 8 || challenge.urgency === 'CRITICAL') {
+    priorityLevel = 'URGENT';
+  } else if (severityScore >= 6 || challenge.urgency === 'HIGH') {
+    priorityLevel = 'HIGH';
+  } else if (severityScore >= 4) {
+    priorityLevel = 'MEDIUM';
+  } else {
+    priorityLevel = 'LOW';
+  }
 
   // Domain & university recommendations
   const domainMap = {
@@ -69,15 +80,16 @@ function fallbackHeuristicAnalysis(challenge, existingChallenges = []) {
   };
 
   const universityMap = {
-    'Ranchi': ['BIT Mesra, Ranchi', 'Ranchi University', 'NIFFT Ranchi'],
-    'Dhanbad': ['IIT (ISM) Dhanbad', 'BIT Sindri'],
-    'Jamshedpur': ['NIT Jamshedpur', 'Arka Jain University'],
+    'Ranchi': ['Birla Institute of Technology (BIT) Mesra', 'Ranchi University', 'NIFFT Ranchi'],
+    'Dhanbad': ['Indian Institute of Technology (ISM) Dhanbad', 'BIT Sindri'],
+    'Jamshedpur': ['National Institute of Technology (NIT) Jamshedpur', 'Arka Jain University'],
+    'East Singhbhum': ['National Institute of Technology (NIT) Jamshedpur'],
     'Bokaro': ['Bokaro Steel City College', 'BIT Mesra Extension'],
     'Hazaribagh': ['Vinoba Bhave University, Hazaribagh', 'UCET Hazaribagh'],
   };
 
   const recommendedDomains = domainMap[detectedCategory] || ['Applied Sciences & Engineering', 'Data Systems'];
-  const suggestedUniversities = universityMap[challenge.district] || ['BIT Mesra, Ranchi', 'IIT (ISM) Dhanbad', 'NIT Jamshedpur'];
+  const suggestedUniversities = universityMap[challenge.district] || ['Birla Institute of Technology (BIT) Mesra', 'Indian Institute of Technology (ISM) Dhanbad', 'National Institute of Technology (NIT) Jamshedpur'];
 
   // Duplicate detection against existing challenges
   const duplicateMatches = [];
@@ -101,6 +113,48 @@ function fallbackHeuristicAnalysis(challenge, existingChallenges = []) {
     }
   }
 
+  // State Lifecycle Action Decision by AI
+  let lifecycleAction = 'VERIFIED'; // Default: VERIFIED (Publish for Open Adoption)
+  let verificationNote = `Autonomous AI validation confirmed legitimate civic challenge impacting ${challenge.affectedPeople || 'local residents'}.`;
+
+  const highDuplicate = duplicateMatches.find(d => d.similarityScore >= 0.70);
+  if (highDuplicate) {
+    lifecycleAction = 'UNDER_REVIEW';
+    verificationNote = `Flagged for Human Review: High similarity (${Math.round(highDuplicate.similarityScore * 100)}%) with prior report "${highDuplicate.title}".`;
+  } else if (!challenge.description || challenge.description.length < 15) {
+    lifecycleAction = 'UNDER_REVIEW';
+    verificationNote = `Flagged for Human Review: Description is too brief for automated technical scoping.`;
+  }
+
+  // University Routing / Assignment by AI
+  let matchedUniversity = null;
+  if (Array.isArray(availableUniversities) && availableUniversities.length > 0) {
+    // 1. Try district + domain match
+    matchedUniversity = availableUniversities.find(u =>
+      u.district?.toLowerCase() === challenge.district?.toLowerCase() &&
+      u.domains?.some(d => d.toLowerCase().includes(detectedCategory.toLowerCase()) || recommendedDomains.some(rd => d.toLowerCase().includes(rd.toLowerCase())))
+    );
+    // 2. Try district match only
+    if (!matchedUniversity) {
+      matchedUniversity = availableUniversities.find(u => u.district?.toLowerCase() === challenge.district?.toLowerCase());
+    }
+    // 3. Try domain match anywhere in Jharkhand
+    if (!matchedUniversity) {
+      matchedUniversity = availableUniversities.find(u =>
+        u.domains?.some(d => d.toLowerCase().includes(detectedCategory.toLowerCase()) || recommendedDomains.some(rd => d.toLowerCase().includes(rd.toLowerCase())))
+      );
+    }
+    // 4. Default fallback to premier state tech institute
+    if (!matchedUniversity) {
+      matchedUniversity = availableUniversities[0];
+    }
+  }
+
+  const aiAssignedUniversity = matchedUniversity ? matchedUniversity._id : null;
+  const targetUniName = matchedUniversity ? matchedUniversity.name : (suggestedUniversities[0] || 'State Technical Universities');
+
+  const aiEndorsement = `[AI Autonomous Triage & Approval] State Lifecycle Action: ${lifecycleAction} (Publish for Open Adoption). Priority Classification: ${priorityLevel}. ${matchedUniversity ? `Route / Assigned to: ${matchedUniversity.name} (${matchedUniversity.district}). ` : ''}${verificationNote}`;
+
   const structuredSummary = `Community issue in ${challenge.district} (${challenge.location}): ${challenge.title}. Primary concern centers around ${detectedCategory.toLowerCase()} affecting ${challenge.affectedPeople || 'local residents'}. Requires technical intervention from ${recommendedDomains[0]}.`;
 
   const solutionIdeas = [
@@ -113,11 +167,15 @@ function fallbackHeuristicAnalysis(challenge, existingChallenges = []) {
     detectedCategory,
     severityScore,
     priorityLevel,
+    lifecycleAction,
+    aiAssignedUniversity,
+    aiEndorsement,
+    isAiVerified: true,
     structuredSummary,
     keyThemes: [detectedCategory, challenge.district, 'Community Welfare'],
     duplicateMatches: duplicateMatches.slice(0, 3),
     recommendedDomains,
-    suggestedUniversities,
+    suggestedUniversities: matchedUniversity ? [matchedUniversity.name, ...suggestedUniversities.filter(u => u !== matchedUniversity.name)] : suggestedUniversities,
     solutionIdeas,
   };
 }
@@ -132,15 +190,16 @@ const analyzeChallenge = async (challengeId) => {
 
     // Check if analysis already exists in DB to prevent duplicate quota consumption
     let existingAnalysis = await ChallengeAIAnalysis.findOne({ challenge: challenge._id });
-    if (existingAnalysis && existingAnalysis.structuredSummary) {
+    if (existingAnalysis && existingAnalysis.structuredSummary && existingAnalysis.isAiVerified) {
       console.log(`[AI] Returning cached AI analysis for challenge ${challenge._id}`);
       return existingAnalysis;
     }
 
-    // Fetch existing challenges in the same district/category for duplicate detection
-    const existingChallenges = await Challenge.find({
-      _id: { $ne: challenge._id },
-    }).select('title description district category').limit(20);
+    // Fetch existing challenges in the same district/category for duplicate detection & all accredited universities
+    const [existingChallenges, availableUniversities] = await Promise.all([
+      Challenge.find({ _id: { $ne: challenge._id } }).select('title description district category').limit(20),
+      University.find().sort({ name: 1 }),
+    ]);
 
     let aiResult = null;
     const apiKey = process.env.GROQ_API_KEY;
@@ -151,16 +210,26 @@ const analyzeChallenge = async (challengeId) => {
         const groq = new Groq({ apiKey: apiKey.trim() });
         const candidateModels = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
 
-        const systemMessage = `You are an expert AI civic analyst for SamadhanSetu, a platform for Smart India Hackathon solving societal challenges in Jharkhand, India. Analyze citizen-reported problems and return STRICTLY a JSON object matching this schema:
+        const uniNames = availableUniversities.map(u => `${u.name} (${u.district} - domains: ${u.domains?.join(', ')})`).join('\n');
+
+        const systemMessage = `You are an expert AI civic analyst and automated triage nodal officer for SamadhanSetu (Govt. of Jharkhand).
+You autonomously perform verification, triage, priority classification, and university routing for citizen-reported problems.
+Registered state universities available for routing:
+${uniNames || 'Birla Institute of Technology (BIT) Mesra, Indian Institute of Technology (ISM) Dhanbad, National Institute of Technology (NIT) Jamshedpur'}
+
+Return STRICTLY a JSON object matching this schema:
 {
   "detectedCategory": "One of: Education, Healthcare, Agriculture, Water & sanitation, Environment, Energy, Rural livelihoods, Accessibility, Urban infrastructure, Public services",
   "severityScore": <Number from 1 to 10>,
   "priorityLevel": "One of: LOW, MEDIUM, HIGH, URGENT",
+  "lifecycleAction": "One of: VERIFIED, ASSIGNED, UNDER_REVIEW",
   "structuredSummary": "<A concise 2-3 sentence technical summary of the problem and required action>",
   "keyThemes": ["<Theme 1>", "<Theme 2>", "<Theme 3>"],
   "recommendedDomains": ["<Engineering or academic domain 1>", "<Domain 2>"],
-  "suggestedUniversities": ["<Jharkhand university e.g. BIT Mesra, IIT ISM Dhanbad, NIT Jamshedpur>"],
-  "solutionIdeas": ["<Idea 1>", "<Idea 2>", "<Idea 3>"]
+  "suggestedUniversities": ["<Jharkhand university name e.g. BIT Mesra, IIT ISM Dhanbad, NIT Jamshedpur>"],
+  "targetUniversityName": "<Exact name of the single best university from registered list to route/assign this issue to, or empty if open>",
+  "solutionIdeas": ["<Idea 1>", "<Idea 2>", "<Idea 3>"],
+  "endorsementReasoning": "<Official civic rationale explaining why this issue is verified and prioritized>"
 }`;
 
         const userPrompt = `Problem Details:
@@ -201,18 +270,46 @@ const analyzeChallenge = async (challengeId) => {
         }
       } catch (groqError) {
         console.log(`[AI] Groq service notice: ${groqError.message}. Seamlessly applying SamadhanSetu civic analysis engine.`);
-        aiResult = fallbackHeuristicAnalysis(challenge, existingChallenges);
+        aiResult = fallbackHeuristicAnalysis(challenge, existingChallenges, availableUniversities);
       }
     } else {
       console.log(`[AI] Running SamadhanSetu civic analysis engine.`);
-      aiResult = fallbackHeuristicAnalysis(challenge, existingChallenges);
+      aiResult = fallbackHeuristicAnalysis(challenge, existingChallenges, availableUniversities);
     }
 
-    // Always compute duplicate matches using DB records if not populated
+    // Heuristic baseline for duplicate check and fallback resolution
+    const heuristicResult = fallbackHeuristicAnalysis(challenge, existingChallenges, availableUniversities);
+
     if (!aiResult.duplicateMatches || aiResult.duplicateMatches.length === 0) {
-      const heuristicDuplicates = fallbackHeuristicAnalysis(challenge, existingChallenges).duplicateMatches;
-      aiResult.duplicateMatches = heuristicDuplicates;
+      aiResult.duplicateMatches = heuristicResult.duplicateMatches;
     }
+    if (!aiResult.lifecycleAction) {
+      aiResult.lifecycleAction = heuristicResult.lifecycleAction;
+    }
+    if (!aiResult.priorityLevel) {
+      aiResult.priorityLevel = heuristicResult.priorityLevel;
+    }
+
+    // Resolve matched university ID from targetUniversityName or heuristic
+    if (!aiResult.aiAssignedUniversity && aiResult.targetUniversityName) {
+      const matchedUni = availableUniversities.find(u =>
+        u.name.toLowerCase().includes(aiResult.targetUniversityName.toLowerCase()) ||
+        aiResult.targetUniversityName.toLowerCase().includes(u.name.toLowerCase())
+      );
+      if (matchedUni) {
+        aiResult.aiAssignedUniversity = matchedUni._id;
+      }
+    }
+    if (!aiResult.aiAssignedUniversity && availableUniversities.length > 0) {
+      aiResult.aiAssignedUniversity = heuristicResult.aiAssignedUniversity;
+    }
+
+    const assignedUniDoc = availableUniversities.find(u => u._id.toString() === aiResult.aiAssignedUniversity?.toString());
+    if (!aiResult.aiEndorsement) {
+      aiResult.aiEndorsement = `[AI Autonomous Triage & Approval] State Lifecycle Action: ${aiResult.lifecycleAction} (Publish for Open Adoption). Priority Classification: ${aiResult.priorityLevel}. ${assignedUniDoc ? `Route / Assigned to: ${assignedUniDoc.name} (${assignedUniDoc.district}). ` : ''}Autonomous AI verification validated problem legitimacy.`;
+    }
+
+    aiResult.isAiVerified = true;
 
     // Save or update analysis in DB
     if (!existingAnalysis) {
@@ -225,15 +322,19 @@ const analyzeChallenge = async (challengeId) => {
     }
     await existingAnalysis.save();
 
-    // Update challenge status to AI_ANALYZED if it was SUBMITTED
-    if (challenge.status === 'SUBMITTED') {
-      challenge.status = 'AI_ANALYZED';
-    }
+    // AUTO-APPROVE AND VERIFY CHALLENGE BY AI
+    challenge.status = aiResult.lifecycleAction || 'VERIFIED';
+    challenge.priority = aiResult.priorityLevel || 'HIGH';
     challenge.aiAnalysis = existingAnalysis._id;
-    if (aiResult.priorityLevel) {
-      challenge.priority = aiResult.priorityLevel;
+    if (aiResult.aiAssignedUniversity) {
+      challenge.assignedUniversity = aiResult.aiAssignedUniversity;
     }
+    challenge.adminNotes = aiResult.aiEndorsement;
+    challenge.verifiedAt = new Date();
+    challenge.isAiVerified = true;
     await challenge.save();
+
+    console.log(`[AI] Challenge ${challenge._id} successfully AI-verified: status=${challenge.status}, priority=${challenge.priority}, assignedUniversity=${challenge.assignedUniversity}`);
 
     return existingAnalysis;
   } catch (error) {

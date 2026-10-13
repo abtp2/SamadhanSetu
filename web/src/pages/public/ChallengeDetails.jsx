@@ -305,8 +305,8 @@ export const ChallengeDetails = () => {
               </button>
             )}
 
-            {/* If Student/University and challenge not yet adopted: Adopt button */}
-            {(user?.role === 'student' || user?.role === 'university') && !project && (
+            {/* If University and challenge not yet adopted: Adopt button */}
+            {user?.role === 'university' && !project && (
               <button
                 onClick={() => setAdoptModalOpen(true)}
                 className="w-full bg-gov-900 hover:bg-gov-800 text-white font-semibold py-2.5 px-3 rounded text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
@@ -316,8 +316,8 @@ export const ChallengeDetails = () => {
               </button>
             )}
 
-            {/* If Industry and Project is active: Offer collaboration */}
-            {user?.role === 'industry' && project && (
+            {/* If CSR Partner and Project is active: Offer collaboration */}
+            {(user?.role === 'csr' || user?.role === 'industry') && project && (
               <button
                 onClick={() => {
                   setCollabTitle(`CSR Funding & Deployment for ${project.title}`);
@@ -326,7 +326,7 @@ export const ChallengeDetails = () => {
                 className="w-full bg-gov-900 hover:bg-gov-800 text-white font-semibold py-2.5 px-3 rounded text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <Building2 className="w-3.5 h-3.5" />
-                <span>Offer Industry CSR Support / Funding</span>
+                <span>Offer CSR Support / Funding</span>
               </button>
             )}
 
@@ -334,7 +334,7 @@ export const ChallengeDetails = () => {
             {!isAuthenticated && (
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/70 text-xs text-slate-600">
                 <p>
-                  Are you a university student, faculty mentor, or CSR foundation?{' '}
+                  Are you an accredited university faculty mentor or CSR foundation?{' '}
                   <Link to="/login" className="text-gov-800 font-semibold underline">
                     Log in
                   </Link>{' '}
@@ -352,7 +352,7 @@ export const ChallengeDetails = () => {
                   <Sparkles className="w-3.5 h-3.5 text-gov-800" />
                   <span>Problem Assessment</span>
                 </div>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-gov-900 border border-blue-200">
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
                   Severity {ai.severityScore || 6}/10
                 </span>
               </div>
@@ -425,7 +425,7 @@ export const ChallengeDetails = () => {
               <div className="pt-2">
                 <Link
                   to={`/projects/${project._id}`}
-                  className="text-xs font-semibold text-gov-800 hover:text-gov-900 flex items-center justify-between p-2.5 bg-blue-50/70 rounded border border-blue-200/60 transition-colors"
+                  className="text-xs font-medium text-slate-800 hover:text-slate-900 flex items-center justify-between p-2.5 bg-slate-100 rounded border border-slate-200 transition-colors"
                 >
                   <span>Open Full Project Workspace & Milestones</span>
                   <span>→</span>
@@ -638,7 +638,7 @@ export const ChallengeDetails = () => {
             <button
               type="submit"
               disabled={actionLoading}
-              className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-semibold"
+              className="px-4 py-1.5 bg-gov-900 hover:bg-gov-800 text-white rounded font-semibold"
             >
               {actionLoading ? 'Submitting...' : 'Dispatch Partnership Proposal'}
             </button>

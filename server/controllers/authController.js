@@ -164,7 +164,14 @@ const login = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide email and password.' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const input = (email || '').trim().toLowerCase();
+    const user = await User.findOne({
+      $or: [
+        { email: input },
+        { email: `${input}@email.com` },
+        { name: { $regex: new RegExp(`^${input}$`, 'i') } },
+      ],
+    });
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid email or password.' });
     }
@@ -249,20 +256,12 @@ const getDemoAccounts = async (req, res) => {
         description: 'Submit civic challenges and track status',
       },
       {
-        role: 'student',
-        name: 'Student',
-        email: 'student@email.com',
-        password: 'password123',
-        district: 'Ranchi',
-        description: 'Browse challenges and collaborate on projects',
-      },
-      {
         role: 'university',
         name: 'Faculty',
         email: 'faculty@email.com',
         password: 'password123',
         district: 'Jamshedpur',
-        description: 'Mentor student projects and review milestones',
+        description: 'Mentor projects and review milestones',
       },
       {
         role: 'university',
@@ -273,12 +272,12 @@ const getDemoAccounts = async (req, res) => {
         description: 'Institutional research coordination and project governance',
       },
       {
-        role: 'industry',
-        name: 'Industry',
-        email: 'industry@email.com',
+        role: 'csr',
+        name: 'TATACSR',
+        email: 'tatacsr@email.com',
         password: 'password123',
         district: 'Jamshedpur',
-        description: 'Fund projects and provide CSR grants',
+        description: 'Tata Steel Foundation CSR grant sponsorships and partnerships',
       },
       {
         role: 'admin',

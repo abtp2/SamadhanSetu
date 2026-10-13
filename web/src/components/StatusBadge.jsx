@@ -1,16 +1,16 @@
 import React from 'react';
 
 const STATUS_STYLES = {
-  SUBMITTED: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-200', label: 'Submitted' },
-  AI_ANALYZED: { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200', label: 'AI Analyzed' },
-  UNDER_REVIEW: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'Under Review' },
-  VERIFIED: { bg: 'bg-blue-50', text: 'text-blue-800', border: 'border-blue-200', label: 'Verified' },
-  ASSIGNED: { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200', label: 'Assigned' },
-  IN_PROGRESS: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', label: 'In Progress' },
-  SOLUTION_SUBMITTED: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200', label: 'Solution Sent' },
-  PILOTING: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', label: 'Piloting' },
-  IMPLEMENTED: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Implemented' },
-  RESOLVED: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Resolved' },
+  SUBMITTED: { bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200', label: 'Submitted' },
+  AI_ANALYZED: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-300', label: 'AI Analyzed' },
+  UNDER_REVIEW: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-300', label: 'Under Review' },
+  VERIFIED: { bg: 'bg-gov-900', text: 'text-white', border: 'border-gov-900', label: 'Verified' },
+  ASSIGNED: { bg: 'bg-gov-800', text: 'text-white', border: 'border-gov-800', label: 'Assigned' },
+  IN_PROGRESS: { bg: 'bg-slate-200', text: 'text-slate-800', border: 'border-slate-300', label: 'In Progress' },
+  SOLUTION_SUBMITTED: { bg: 'bg-slate-200', text: 'text-slate-800', border: 'border-slate-300', label: 'Solution Sent' },
+  PILOTING: { bg: 'bg-slate-200', text: 'text-slate-900', border: 'border-slate-400 font-semibold', label: 'Piloting' },
+  IMPLEMENTED: { bg: 'bg-slate-100', text: 'text-slate-900', border: 'border-slate-400 font-semibold', label: 'Implemented' },
+  RESOLVED: { bg: 'bg-slate-100', text: 'text-slate-900', border: 'border-slate-400 font-semibold', label: 'Resolved' },
 };
 
 export const StatusBadge = ({ status, className = '' }) => {
@@ -24,10 +24,9 @@ export const StatusBadge = ({ status, className = '' }) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${config.bg} ${config.text} ${config.border} ${className}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${config.bg} ${config.text} ${config.border} ${className}`}
     >
       {config.label}
     </span>
   );
 };
-

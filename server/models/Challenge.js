@@ -156,6 +156,10 @@ const challengeSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    isAiVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

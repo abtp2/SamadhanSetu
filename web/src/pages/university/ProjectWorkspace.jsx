@@ -209,10 +209,10 @@ export const ProjectWorkspace = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200">
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-300">
               Phase: {project.currentPhase}
             </span>
-            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-gov-900 text-white border-gov-900">
               Status: {project.status}
             </span>
           </div>
@@ -324,12 +324,8 @@ export const ProjectWorkspace = () => {
                     <span
                       className={`px-2 py-0.5 rounded text-[11px] font-semibold tracking-wide uppercase shrink-0 border ${
                         m.status === 'VERIFIED'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                          : m.status === 'SUBMITTED'
-                          ? 'bg-sky-50 text-sky-800 border-sky-300'
-                          : m.status === 'IN_PROGRESS'
-                          ? 'bg-purple-50 text-purple-800 border-purple-300'
-                          : 'bg-slate-100 text-slate-700 border-slate-300'
+                          ? 'bg-gov-900 text-white border-gov-900'
+                          : 'bg-slate-100 text-slate-700 border-slate-200'
                       }`}
                     >
                       {m.status}
@@ -362,7 +358,7 @@ export const ProjectWorkspace = () => {
                     {isMentorOrAdmin && m.status === 'SUBMITTED' && (
                       <button
                         onClick={() => handleVerifyMilestone(m._id)}
-                        className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-2.5 py-1 rounded text-xs flex items-center gap-1 shadow-xs ml-auto"
+                        className="bg-gov-900 hover:bg-gov-800 text-white font-semibold px-2.5 py-1 rounded text-xs flex items-center gap-1 shadow-xs ml-auto"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Verify & Approve Milestone</span>
@@ -412,7 +408,7 @@ export const ProjectWorkspace = () => {
                     <p className="font-bold text-slate-900">{project.facultyMentor.name}</p>
                     <p className="text-[11px] text-slate-500">{project.facultyMentor.email}</p>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-200 px-1.5 py-0.5 rounded">
                     Faculty Mentor
                   </span>
                 </div>
@@ -437,14 +433,14 @@ export const ProjectWorkspace = () => {
           <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <Handshake className="w-4 h-4 text-emerald-700" />
+                <Handshake className="w-4 h-4 text-slate-700" />
                 <span>Industry & CSR Offers ({collaborations.length})</span>
               </h3>
             </div>
 
             {collaborations.length === 0 ? (
               <p className="text-center py-4 text-xs text-slate-500">
-                No industry collaboration offers yet. Verified projects appear in the Industry CSR portal.
+                No industry collaboration offers yet.
               </p>
             ) : (
               <div className="space-y-3">
@@ -459,10 +455,10 @@ export const ProjectWorkspace = () => {
                         <h4 className="font-semibold text-slate-900 mt-0.5">{collab.title}</h4>
                       </div>
                       <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
                           collab.status === 'ACCEPTED'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
+                            ? 'bg-gov-900 text-white border-gov-900'
+                            : 'bg-slate-100 text-slate-700 border-slate-200'
                         }`}
                       >
                         {collab.status}
@@ -472,7 +468,7 @@ export const ProjectWorkspace = () => {
                     <p className="text-slate-600 text-[11px] leading-relaxed">{collab.offerDetails}</p>
 
                     {collab.amountOffered > 0 && (
-                      <p className="font-semibold text-emerald-700">
+                      <p className="font-semibold text-slate-900">
                         Offered Grant: ₹{collab.amountOffered.toLocaleString('en-IN')}
                       </p>
                     )}
@@ -487,7 +483,7 @@ export const ProjectWorkspace = () => {
                         </button>
                         <button
                           onClick={() => handleCollabStatus(collab._id, 'ACCEPTED')}
-                          className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-semibold shadow-2xs"
+                          className="px-2.5 py-1 bg-gov-900 hover:bg-gov-800 text-white rounded font-semibold shadow-2xs"
                         >
                           Accept Partnership
                         </button>

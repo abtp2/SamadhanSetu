@@ -30,7 +30,6 @@ export const Sidebar = () => {
           { to: '/citizen/my-challenges', label: 'My Submissions', icon: ListOrdered },
           { to: '/map', label: 'District Map', icon: MapPin },
         ];
-      case 'student':
       case 'university':
         return [
           { to: '/university/dashboard', label: 'Open Challenges', icon: GraduationCap },
@@ -38,10 +37,11 @@ export const Sidebar = () => {
           { to: '/explore', label: 'All State Challenges', icon: ListOrdered },
           { to: '/map', label: 'Geospatial Map', icon: MapPin },
         ];
+      case 'csr':
       case 'industry':
         return [
-          { to: '/industry/dashboard', label: 'Project Discovery', icon: Building2 },
-          { to: '/industry/partnerships', label: 'Active Partnerships', icon: Handshake },
+          { to: '/csr/dashboard', label: 'CSR Project Discovery', icon: Building2 },
+          { to: '/csr/partnerships', label: 'CSR Partnerships', icon: Handshake },
           { to: '/analytics', label: 'State Impact', icon: BarChart3 },
           { to: '/map', label: 'District Map', icon: MapPin },
         ];
@@ -71,7 +71,7 @@ export const Sidebar = () => {
           <div className="overflow-hidden">
             <h4 className="text-xs font-bold text-slate-900 truncate">{user.name}</h4>
             <p className="text-[11px] text-slate-500 capitalize font-medium">
-              {role}
+              {role === 'csr' ? 'CSR Foundation' : role}
             </p>
             <p className="text-[10px] text-slate-400 truncate">
               {user.universityName || user.organizationName || user.district || 'Jharkhand'}

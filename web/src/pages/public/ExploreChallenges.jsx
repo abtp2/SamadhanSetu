@@ -171,7 +171,7 @@ export const ExploreChallenges = () => {
 
       {/* Grid List */}
       {loading ? (
-        <div className="text-center py-16 text-xs text-slate-500">Loading challenges from database...</div>
+        <div className="text-center py-16 text-xs text-slate-500">Loading civic challenges...</div>
       ) : challenges.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-2">
           <AlertCircle className="w-8 h-8 text-slate-400 mx-auto" />

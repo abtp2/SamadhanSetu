@@ -50,6 +50,24 @@ const challengeAIAnalysisSchema = new mongoose.Schema(
     solutionIdeas: [{
       type: String,
     }],
+    lifecycleAction: {
+      type: String,
+      enum: ['VERIFIED', 'ASSIGNED', 'UNDER_REVIEW', 'RESOLVED'],
+      default: 'VERIFIED',
+    },
+    aiAssignedUniversity: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'University',
+      default: null,
+    },
+    aiEndorsement: {
+      type: String,
+      default: '',
+    },
+    isAiVerified: {
+      type: Boolean,
+      default: true,
+    },
     isReviewedByAdmin: {
       type: Boolean,
       default: false,

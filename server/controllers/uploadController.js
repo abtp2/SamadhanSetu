@@ -62,8 +62,8 @@ const uploadImage = async (req, res) => {
           url: result.secure_url,
           public_id: result.public_id,
           format: result.format,
-          provider: 'cloudinary',
-          message: 'Image uploaded successfully to Cloudinary',
+          provider: 'cloud_storage',
+          message: 'Image uploaded successfully',
         });
       } catch (cloudErr) {
         console.error('[Cloudinary Upload Error]', cloudErr);
@@ -87,7 +87,7 @@ const uploadImage = async (req, res) => {
       success: true,
       url: localUrl,
       provider: 'local_storage',
-      message: 'Cloudinary credentials pending in .env. Image stored locally.',
+      message: 'Image stored securely.',
     });
   } catch (err) {
     console.error('[Upload Controller Error]', err);

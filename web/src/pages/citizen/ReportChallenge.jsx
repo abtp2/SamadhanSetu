@@ -305,8 +305,8 @@ export const ReportChallenge = () => {
           <div className="flex items-center justify-between mb-1">
             <label className="block font-semibold text-slate-700">Photo Evidence</label>
             <span className="text-[11px] text-slate-500 flex items-center gap-1">
-              <Cloud className="w-3 h-3 text-sky-600" />
-              <span>Cloudinary Storage</span>
+              <Cloud className="w-3 h-3 text-gov-700" />
+              <span>Secure Upload</span>
             </span>
           </div>
           <input
@@ -328,7 +328,7 @@ export const ReportChallenge = () => {
           {uploadingImage ? (
             <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-6 text-center space-y-2">
               <Loader2 className="w-7 h-7 text-gov-800 animate-spin mx-auto" />
-              <p className="text-xs font-semibold text-slate-800">Uploading image to Cloudinary...</p>
+              <p className="text-xs font-semibold text-slate-800">Uploading photo evidence...</p>
               <p className="text-[11px] text-slate-500">Optimizing resolution and preparing geotag metadata</p>
             </div>
           ) : previewImage ? (
@@ -339,9 +339,9 @@ export const ReportChallenge = () => {
                 className="w-full h-48 object-cover rounded-lg"
               />
               <div className="flex items-center justify-between pt-2 px-1 text-xs">
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                   <CheckCircle2 className="w-3 h-3" />
-                  <span>{uploadProvider === 'cloudinary' ? 'Cloudinary CDN Ready' : 'Photo Attached'}</span>
+                  <span>Photo Evidence Attached</span>
                 </span>
                 <div className="flex items-center gap-3">
                   <button

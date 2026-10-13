@@ -48,12 +48,16 @@ async function runVerification() {
     const newChallengeData = await challengeRes.json();
     const challenge = newChallengeData.challenge;
     console.log('  ✓ Challenge created with ID:', challenge._id);
-    console.log('  ✓ AI Analysis Attached:', challenge.aiAnalysis ? 'Yes (Cached)' : 'Pending');
+    console.log('  ✓ Autonomous AI Lifecycle Status:', challenge.status, '(Auto-Approved by AI)');
+    console.log('  ✓ Autonomous AI Priority:', challenge.priority);
+    console.log('  ✓ Autonomous AI Assigned University:', challenge.assignedUniversity?.name || challenge.assignedUniversity || 'Open');
+    console.log('  ✓ AI Analysis Attached:', challenge.aiAnalysis ? 'Yes' : 'Pending');
     console.log('    • AI Severity Score:', challenge.aiAnalysis?.severityScore || 'N/A');
     console.log('    • AI Recommended Domain:', challenge.aiAnalysis?.recommendedDomains?.[0] || 'N/A');
+    console.log('    • AI Endorsement Note:', challenge.aiAnalysis?.aiEndorsement || challenge.adminNotes || 'N/A');
 
-    // 4. Admin Login & Verification
-    console.log('\n[Step 4] Government Admin verifying challenge...');
+    // 4. Admin Login & Viewing All Issues / Oversight
+    console.log('\n[Step 4] Government Admin viewing all issues and AI triage results...');
     const adminLoginRes = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,6 +66,14 @@ async function runVerification() {
     const adminAuth = await adminLoginRes.json();
     const adminToken = adminAuth.token;
 
+    const queueRes = await fetch(`${BASE_URL}/admin/verification-queue`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    const queueData = await queueRes.json();
+    console.log('  ✓ Admin retrieved all issues count:', queueData.count);
+    console.log('  ✓ Total AI-Verified Issues:', queueData.stats?.aiVerified);
+
+    // Admin supervisory note update (optional override/endorsement)
     const verifyRes = await fetch(`${BASE_URL}/admin/verify/${challenge._id}`, {
       method: 'PATCH',
       headers: {
@@ -70,13 +82,13 @@ async function runVerification() {
       },
       body: JSON.stringify({
         status: 'VERIFIED',
-        priority: 'URGENT',
-        adminNotes: 'Verified with Ranchi District Water Board. Published for immediate university adoption.',
+        priority: 'HIGH',
+        adminNotes: 'Confirmed by State Nodal Officer: Priority HIGH. Published for university R&D taskforce adoption.',
       }),
     });
     const verifiedData = await verifyRes.json();
-    console.log('  ✓ Admin approved challenge status:', verifiedData.challenge.status);
-    console.log('  ✓ Priority set to:', verifiedData.challenge.priority);
+    console.log('  ✓ Admin supervisory check completed. Status:', verifiedData.challenge.status);
+    console.log('  ✓ Priority confirmed as:', verifiedData.challenge.priority);
 
     // 5. Student Adopts Challenge
     console.log('\n[Step 5] University Student adopting challenge...');

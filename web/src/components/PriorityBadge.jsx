@@ -1,11 +1,11 @@
 import React from 'react';
 
 const PRIORITY_STYLES = {
-  LOW: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-200' },
-  MEDIUM: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
-  HIGH: { bg: 'bg-amber-50', text: 'text-amber-800', border: 'border-amber-200' },
-  URGENT: { bg: 'bg-rose-50', text: 'text-rose-800', border: 'border-rose-200' },
-  CRITICAL: { bg: 'bg-red-50', text: 'text-red-800', border: 'border-red-200 font-bold' },
+  LOW: { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-200 font-normal' },
+  MEDIUM: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-300 font-medium' },
+  HIGH: { bg: 'bg-gov-800', text: 'text-white', border: 'border-gov-800 font-semibold' },
+  URGENT: { bg: 'bg-gov-900', text: 'text-white', border: 'border-gov-900 font-bold' },
+  CRITICAL: { bg: 'bg-gov-950', text: 'text-white', border: 'border-gov-950 font-bold' },
 };
 
 export const PriorityBadge = ({ priority = 'MEDIUM', className = '' }) => {
@@ -14,10 +14,9 @@ export const PriorityBadge = ({ priority = 'MEDIUM', className = '' }) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide uppercase border ${config.bg} ${config.text} ${config.border} ${className}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] tracking-wide uppercase border ${config.bg} ${config.text} ${config.border} ${className}`}
     >
       {priority}
     </span>
   );
 };
-

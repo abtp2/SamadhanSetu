@@ -302,7 +302,7 @@ export const InstitutionsManager = () => {
             <button type="button" onClick={() => setOrgModalOpen(false)} className="px-3 py-1.5 border border-slate-300 rounded text-slate-700">
               Cancel
             </button>
-            <button type="submit" className="px-4 py-1.5 bg-emerald-700 text-white rounded font-semibold">
+            <button type="submit" className="px-4 py-1.5 bg-gov-900 hover:bg-gov-800 text-white rounded font-semibold">
               Save Partner
             </button>
           </div>

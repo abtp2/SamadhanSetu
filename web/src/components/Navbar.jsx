@@ -166,9 +166,9 @@ export const Navbar = () => {
     if (!user) return '/login';
     switch (user.role) {
       case 'citizen': return '/citizen/dashboard';
-      case 'student':
       case 'university': return '/university/dashboard';
-      case 'industry': return '/industry/dashboard';
+      case 'csr':
+      case 'industry': return '/csr/dashboard';
       case 'admin': return '/admin/dashboard';
       default: return '/';
     }
@@ -224,15 +224,6 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center space-x-3">
             {isAuthenticated ? (
               <>
-                {/* Citizen Report Button */}
-                <Link
-                  to="/citizen/report"
-                  className="inline-flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-3 py-1.5 rounded text-xs transition-colors shadow-xs"
-                >
-                  <PlusCircle className="w-3.5 h-3.5" />
-                  <span>Report Issue</span>
-                </Link>
-
                 {/* Notifications Bell */}
                 <button
                   ref={bellBtnRef}
@@ -257,7 +248,7 @@ export const Navbar = () => {
                   className="inline-flex items-center space-x-1.5 bg-gov-800 hover:bg-gov-700 text-white px-3 py-1.5 rounded text-xs font-medium border border-gov-700 transition-colors"
                 >
                   <User className="w-3.5 h-3.5 opacity-80" />
-                  <span className="capitalize">{user.role} Dashboard</span>
+                  <span className="capitalize">{user.role === 'csr' ? 'CSR' : user.role} Dashboard</span>
                 </Link>
 
                 {/* Logout */}
@@ -472,14 +463,7 @@ export const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded text-sm bg-gov-800 text-white font-medium"
               >
-                Go to {user?.role} Dashboard
-              </Link>
-              <Link
-                to="/citizen/report"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded text-sm bg-amber-500 text-slate-950 font-semibold"
-              >
-                Report a Challenge
+                Go to {user?.role === 'csr' ? 'CSR' : user?.role} Dashboard
               </Link>
               <button
                 onClick={() => {

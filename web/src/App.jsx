@@ -92,7 +92,7 @@ const AppLayout = ({ children }) => {
             <div className="flex items-center space-x-4 text-[11px]">
               <span>Dept. of Higher Education & IT, Govt. of Jharkhand</span>
               <span>•</span>
-              <span>OpenStreetMap / Leaflet</span>
+              <span>Official Civic Portal</span>
             </div>
           </div>
         </footer>
@@ -128,7 +128,7 @@ export const App = () => {
             <Route
               path="/citizen/report"
               element={
-                <ProtectedRoute allowedRoles={['citizen', 'student', 'university', 'industry', 'admin']}>
+                <ProtectedRoute allowedRoles={['citizen', 'university', 'csr', 'industry', 'admin']}>
                   <ReportChallenge />
                 </ProtectedRoute>
               }
@@ -142,11 +142,11 @@ export const App = () => {
               }
             />
 
-            {/* University & Student Routes */}
+            {/* University Routes */}
             <Route
               path="/university/dashboard"
               element={
-                <ProtectedRoute allowedRoles={['student', 'university', 'admin']}>
+                <ProtectedRoute allowedRoles={['university', 'admin']}>
                   <UniversityDashboard />
                 </ProtectedRoute>
               }
@@ -154,7 +154,7 @@ export const App = () => {
             <Route
               path="/university/projects"
               element={
-                <ProtectedRoute allowedRoles={['student', 'university', 'admin']}>
+                <ProtectedRoute allowedRoles={['university', 'admin']}>
                   <UniversityDashboard />
                 </ProtectedRoute>
               }
@@ -162,17 +162,33 @@ export const App = () => {
             <Route
               path="/projects/:id"
               element={
-                <ProtectedRoute allowedRoles={['student', 'university', 'industry', 'admin']}>
+                <ProtectedRoute allowedRoles={['university', 'csr', 'industry', 'admin']}>
                   <ProjectWorkspace />
                 </ProtectedRoute>
               }
             />
 
-            {/* Industry Routes */}
+            {/* CSR & Industry Routes */}
+            <Route
+              path="/csr/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['csr', 'industry', 'admin']}>
+                  <IndustryDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/csr/partnerships"
+              element={
+                <ProtectedRoute allowedRoles={['csr', 'industry', 'admin']}>
+                  <IndustryDashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/industry/dashboard"
               element={
-                <ProtectedRoute allowedRoles={['industry', 'admin']}>
+                <ProtectedRoute allowedRoles={['csr', 'industry', 'admin']}>
                   <IndustryDashboard />
                 </ProtectedRoute>
               }
@@ -180,7 +196,7 @@ export const App = () => {
             <Route
               path="/industry/partnerships"
               element={
-                <ProtectedRoute allowedRoles={['industry', 'admin']}>
+                <ProtectedRoute allowedRoles={['csr', 'industry', 'admin']}>
                   <IndustryDashboard />
                 </ProtectedRoute>
               }

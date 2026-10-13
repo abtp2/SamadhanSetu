@@ -144,16 +144,42 @@ const createChallenge = async (req, res) => {
     // Re-fetch populated challenge
     const populated = await Challenge.findById(challenge._id)
       .populate('submittedBy', 'name email district')
-      .populate('aiAnalysis');
+      .populate('aiAnalysis')
+      .populate('assignedUniversity', 'name district logo');
 
-    // Notify admins of new submission
+    // Notify citizen of immediate AI verification and open publication
     try {
+      if (populated.submittedBy?._id) {
+        await Notification.create({
+          recipient: populated.submittedBy._id,
+          title: `Challenge AI-Verified: ${populated.status}`,
+          message: `Your issue "${populated.title}" has been autonomously verified with ${populated.priority} priority and published for university adoption.`,
+          link: `/challenges/${populated._id}`,
+          type: 'SUCCESS',
+        });
+      }
+
+      // Notify university if routed/assigned
+      if (populated.assignedUniversity?._id) {
+        const uniUsers = await User.find({ university: populated.assignedUniversity._id }).select('_id');
+        for (const u of uniUsers) {
+          await Notification.create({
+            recipient: u._id,
+            title: 'New Civic Challenge Routed to Your University',
+            message: `AI routed "${populated.title}" (${populated.district}) to your institution. Open for taskforce adoption.`,
+            link: `/challenges/${populated._id}`,
+            type: 'CHALLENGE',
+          });
+        }
+      }
+
+      // Notify admins of new verified submission
       const admins = await User.find({ role: 'admin' }).select('_id');
       for (const admin of admins) {
         await Notification.create({
           recipient: admin._id,
-          title: 'New Challenge Reported',
-          message: `Citizen reported: "${challenge.title}" in ${challenge.district}`,
+          title: 'Challenge AI-Verified & Published',
+          message: `AI triaged: "${populated.title}" [${populated.priority}] in ${populated.district}. Published for adoption.`,
           link: `/admin/verification`,
           type: 'CHALLENGE',
         });
@@ -164,7 +190,7 @@ const createChallenge = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Challenge submitted successfully and analyzed by AI.',
+      message: `Challenge submitted, autonomously AI-verified as ${populated.status} (${populated.priority} priority), and published for university adoption.`,
       challenge: populated,
     });
   } catch (error) {

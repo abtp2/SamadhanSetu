@@ -15,7 +15,7 @@
 [1. Report]      Citizen geotags issue with photos, population, & perceived urgency.
        │
        ▼
-[2. AI Triage]   Gemini AI structures summary, scores severity (1-10), checks duplicates, & recommends domains.
+[2. AI Triage]   Groq AI structures summary, scores severity (1-10), checks duplicates, & recommends domains.
        │
        ▼
 [3. Verify]      State nodal officer validates problem and publishes to university portal.
@@ -39,9 +39,9 @@
   - **Mobile Client (`/mobile`):** Expo React Native (Pure JavaScript), React Navigation Bottom Tabs & Native Stack, GPS Geotagging (`expo-location`), Image selection (`expo-image-picker`), Leaflet in WebView.
 - **Shared Backend (`/server`):**
   - Node.js + Express REST APIs
-  - MongoDB Atlas + Mongoose (with embedded `mongodb-memory-server` fallback for zero-friction local grading)
+  - MongoDB Atlas + Mongoose
   - JWT Authentication & Role-Based Access Control (RBAC) across 5 distinct roles
-  - **Gemini AI Free-Tier Integration:** Problem categorization, severity scoring, duplicate detection, and university recommendations (cached in MongoDB to preserve API quota). Intelligent heuristic fallback when API key is not supplied.
+  - **Groq AI Integration (Llama-3.3-70B & Llama-3.1-8B):** Problem categorization, severity scoring, duplicate detection, and university recommendations (cached in MongoDB to preserve API quota). Intelligent heuristic fallback when API key is not supplied.
   - **Leaflet + OpenStreetMap:** Lightweight, open-source geospatial mapping without expensive third-party map keys.
 
 ---
@@ -112,7 +112,7 @@ npm start
 - `GET /api/auth/me` - Current authenticated user profile
 - `GET /api/challenges` - List challenges with filters (`district`, `category`, `status`, `search`)
 - `GET /api/challenges/:id` - Full challenge details + AI analysis + Project progress
-- `POST /api/challenges` - Citizen reports challenge (triggers automatic Gemini AI analysis)
+- `POST /api/challenges` - Citizen reports challenge (triggers automatic Groq AI analysis)
 - `POST /api/projects/adopt` - Student or university team adopts verified challenge
 - `GET /api/projects/:id` - Project roadmap, milestones, team members, and CSR offers
 - `POST /api/projects/:id/milestones` - Add deliverable milestone
